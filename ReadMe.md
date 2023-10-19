@@ -169,3 +169,7 @@ python evaluation/two_stage.py
 | `split` | Data split: 'dev' or 'test' (some datasets may not have a dev set) |
 | `top_k` | Number of results from the first-stage retrieval to use for reranking |
 | `saved_retrieval_result` | Load retrieval results (retrieval results are in pickle format) |"
+
+
+**Acknowledgement**
+This code is based on [beir](https://github.com/beir-cellar/beir), [sentence-transformers](https://github.com/UKPLab/sentence-transformers), and [gpl](https://github.com/UKPLab/gpl). We would like to express our gratitude for their high-quality code and efforts.
