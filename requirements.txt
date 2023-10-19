@@ -1,0 +1,5 @@
+gpl==0.1.4
+beir==1.0.1
+tensorboard
+protobuf==3.19.0
+transformers==4.32.1

@@ -1,0 +1,29 @@
+generate_pseudo_queries: true # whether to generate pseudo queries
+score_pseudo_qrels: true # whether to score the pseudo qrels
+create_cross_train_data: true # whether to create cross-encoder train data
+
+# arguments for creating train and dev sets
+base_path: . # base path
+dataset: scifact # dataset name, e.g., scifact, bioasq check https://github.com/beir-cellar/beir
+prefix: gen # prefix for the output files
+new_corpus_size: 100000 # number of documents to used to generate the pseudo queries
+device: cuda:0 # device to use
+seed: 1 # random seed
+pseudo_data_folder: pseudo/scifact # path to the folder containing the pseudo data
+original_data_folder: datasets/scifact
+
+# query generator arguments
+query_gen:
+  batch_size: 2 # batch size for the query generator
+  model_path: BeIR/query-gen-msmarco-t5-large-v1 # path to the query generator model
+
+# cross-encoder train data arguments
+cross_train_data:
+  top_n: 100000 # number of documents to retrieve from the initial ranking
+  limit_score: 0 # limit score (after sigmoid) for the retriever
+  cross_encoder_name: cross-encoder/ms-marco-MiniLM-L-12-v2 # name of the cross-encoder model to use
+  mine_batch_size: 512 # batch size for using bi-encoder to mine hard negatives
+  cross_batch_size: 1300 # batch size for the cross-encoder
+  max_length: 300 # max length for the cross-encoder
+  nneg: 1000 # number of negative samples to min
+  hard_neg_name: cross-hard-negatives.jsonl
