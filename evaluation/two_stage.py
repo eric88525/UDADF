@@ -15,7 +15,6 @@ def parse_args():
     parser.add_argument('--rerank_model', type=str)
     parser.add_argument('--retrieval_model', type=str)
     parser.add_argument('--dataset', type=str)
-    parser.add_argument('--ori_dataset', type=str, help='the path to original dataset')
     parser.add_argument('--retrieval_batch_size', type=int, default=512)
     parser.add_argument('--rerank_batch_size', type=int, default=1300)
     parser.add_argument('--split', type=str, default='test')
@@ -61,7 +60,6 @@ def main(args):
     #### Complete list - https://www.sbert.net/docs/pretrained_models.html
 
     # ================== Retrieval ==================
-    corpus = load_corpus(args.ori_dataset, True)
     results = None
 
     if os.path.exists(args.saved_retrieval_result):
