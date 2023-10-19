@@ -337,7 +337,7 @@ def create_dev(data_folder,
     return dev_samples_path
 
 
-def create_cross_train_data(
+def create_negative_pools(
     pseudo_data_folder,
     original_data_folder,
     prefix="gen",

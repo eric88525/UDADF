@@ -1,6 +1,6 @@
 generate_pseudo_queries: true # whether to generate pseudo queries
 score_pseudo_qrels: true # whether to score the pseudo qrels
-create_cross_train_data: true # whether to create cross-encoder train data
+create_negative_pools: true # whether to create cross-encoder train data
 
 # arguments for creating train and dev sets
 base_path: . # base path

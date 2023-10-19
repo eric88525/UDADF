@@ -15,7 +15,7 @@ logging.basicConfig(
 
 def main(config):
     
-    from denoise_ir.preprocess import download_dataset, resize, generate_pseudo_queries, score_pseudo_qrels, create_cross_train_data, create_dev
+    from denoise_ir.preprocess import download_dataset, resize, generate_pseudo_queries, score_pseudo_qrels, create_negative_pools, create_dev
     from denoise_ir.utils import set_seed
     
     set_seed(config["seed"])
@@ -63,8 +63,8 @@ def main(config):
 
     # create train data for fine-tune cross-encoder,
     # only use {top_n} highest scored (query, passage) pairs
-    if config["create_cross_train_data"]:
-        create_cross_train_data(
+    if config["create_negative_pools"]:
+        create_negative_pools(
             pseudo_data_folder,
             original_data_folder=config["original_data_folder"],
             prefix=config["prefix"],
