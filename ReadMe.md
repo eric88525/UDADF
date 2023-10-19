@@ -149,3 +149,23 @@ sh scripts/build_distillation_dataset.sh
 ```
 sh scripts/bi_encoder_adaptation.sh
 ```
+
+
+# Evaluation
+
+To perform two-stage retrieval evaluation, please execute the following command:
+
+```bash
+python evaluation/two_stage.py
+```
+
+| Parameter | Description |
+| --------- | ----------- |
+| `rerank_model` | Path to the rerank model |
+| `retrieval_model` | Path to the retrieval model |
+| `dataset` | Name of the dataset |
+| `retrieval_batch_size` | Batch size for first-stage retrieval |
+| `rerank_batch_size` | Batch size for rerank model |
+| `split` | Data split: 'dev' or 'test' (some datasets may not have a dev set) |
+| `top_k` | Number of results from the first-stage retrieval to use for reranking |
+| `saved_retrieval_result` | Load retrieval results (retrieval results are in pickle format) |"
