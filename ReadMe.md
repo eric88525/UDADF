@@ -1,6 +1,6 @@
 # Breaking Boundaries in Retrieval Systems: Unsupervised Domain Adaptation with Denoise-Finetuning
 
-This repository contains the implementation of a method for `Breaking Boundaries in Retrieval Systems: Unsupervised Domain Adaptation with Denoise-Finetuning`.
+This repository contains the implementation of a method for **Breaking Boundaries in Retrieval Systems: Unsupervised Domain Adaptation with Denoise-Finetuning**.
 
 ![](./imgs/flow.png)
 
@@ -13,7 +13,7 @@ Our adaptation pipeline consists of three parts:
 3. Bi-Encoder (Retrieval Model) Adaptation
 
 ## Installation
-Our experiment was conducted using a single RTX 3090.
+
 ```
 conda create -n udadf python=3.8
 conda activate udadf
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 
 ## Pipeline
-
+Our experiment was conducted using a single RTX 3090 (24G). If the process runs out of virtual memory, please consider adjusting the batch size.
 ### Generation of Pseudo Training Dataset
 
 As described in **Section 3.1** of the paper, we select a subset of passages from the corpus and input them into the Query Generator to generate pseudo queries. This process results in pairs comprising queries and passages. Subsequently, we employ the Cross-Encoder to assign labels to these (query, passage) pairs, resulting in the creation of triplets in the format of (query, passage, score).
