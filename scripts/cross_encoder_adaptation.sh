@@ -1,66 +1,81 @@
 #!/bin/bash
+# Script to fine-tune a model for denoising and normal tasks.
+
+# Set the base path to the current working directory.
 base_path="$(pwd)"
 seed=1
 
-# Denoising finetuning Loss = L_label + gamma * L_agg
+# Denoising Fine-Tuning Loss (Eq. 3)
+# Loss = L_label + gamma * L_agg
 # T = total training steps
+# After T * denoise_warmup_ratio training steps, the model starts co-regularization learning.
 denoise_warmup_ratio=0.1
-random_batch_warmup_ratio=0.1 # after T * random_batch_warmup_ratio, model start to do co-regularization learning # a%
-random_batch_warmup_p=0.2 # a% in in Figure 3.4
-warmup_ratio=0.1 # learning rate warmup
-gamma=1 # r
+
+# During the first T * {random_batch_warmup_ratio} training steps, 
+# the model randomly drops batches with a probability of {random_batch_warmup_p}.
+random_batch_warmup_ratio=0.1 
+random_batch_warmup_p=0.2 # Probability of batch dropout
+
+# Learning rate warm-up
+warmup_ratio=0.1 
+gamma=1 # r in Eq. 3
 
 # Hard negatives and qrel name
 hard_negatives_name="cross-hard-negatives.jsonl"
-prefix="gen"
-unique=false
+prefix="gen" # prefix of the generate queries
+unique=false # If true, use only unique (query, passage, label) triples
 
-# Pos/Negative sampling
-neg_per_model=1
-pos_neg_ratio=2
-neg_retrievers="bm25 msmarco-distilbert-base-v3"
+# Positive/Negative Sampling
+neg_per_model=1 # Number of negative passages from each model
+pos_neg_ratio=2 # Number of negative passages / Number of positive passages
+neg_retrievers="bm25 msmarco-distilbert-base-v3" # Retrievers used to sample negative passages, separated by space
 
-# using passage in (skip_top_n, use_top_n) as hard negatives
+# Using passages in the range (skip_top_n, use_top_n) as hard negatives
 skip_top_n=0
 use_top_n=1000
 sample_mode="random"
 
-# Paths
+# CUDA device
 device="cuda:0"
 
-# Training args
-lr=1.5e-5
-train_batch_size=32
-num_epochs=2
+# Training arguments
+lr=1.5e-5 # Learning rate
+train_batch_size=32 # Batch size
+num_epochs=2 # Number of epochs
 
-# Model args
-model_name="L12"
-max_seq_length=300
-use_amp=True
+# Model arguments
+# You can add more models at train_model/train_cross.py. 
+# Add {model_name:path} to the model_name_mapping dictionary.
+# To use two models for co-regularization, separate them with @.
+# For example, model_name="L12@L12" or model_name="L6@L12"
+model_name="L12" 
+max_seq_length=300 # Maximum length of input sequence
+use_amp=True # Use automatic mixed precision training
 
-# evaluation args
+# Evaluation arguments
 dataset="scifact"
 test_dataset="scifact"
 test_retrieval_result="bm25/${dataset}_test_top1000.json"
-max_test_samples=10000
-evaluation_steps=1000
-generated_path="pseudo/${dataset}"
+max_test_samples=10000 # Number of samples used for model evaluation
+evaluation_steps=1000 # Evaluate the model every {evaluation_steps} training steps
+generated_path="pseudo/${dataset}" # Path for pseudo dataset
 
-for finetune_method in  "normal" "denoise"; do
+# Run normal fine-tuning and denoise fine-tuning
+for finetune_method in "normal" "denoise"; do
 
     if [ "${finetune_method}" = "normal" ]; then
-        # normal fine-tuning
+        # Normal fine-tuning
         model_name="L12"
         denoise_warmup_ratio=0
         random_batch_warmup_ratio=0
-        warmup_ratio=0.1 # learning rate warmup
+        warmup_ratio=0.1 # Learning rate warm-up
         gamma=0
     else
-        # denoise fine-tuning
+        # Denoise fine-tuning
         model_name="L12@L12"
         denoise_warmup_ratio=0.1
-        random_batch_warmup_ratio=0.1 # after T*random_batch_warmup_ratio, model start to do co-regularization learning
-        warmup_ratio=0.1 # learning rate warmup
+        random_batch_warmup_ratio=0.1 # After T * random_batch_warmup_ratio, the model starts co-regularization learning
+        warmup_ratio=0.1 # Learning rate warm-up
         gamma=1
     fi
 
@@ -96,4 +111,3 @@ for finetune_method in  "normal" "denoise"; do
     --test_retrieval_result $test_retrieval_result \
     --max_test_samples $max_test_samples
 done
-
