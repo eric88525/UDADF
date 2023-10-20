@@ -88,14 +88,26 @@ In previous steps, we only mined hard negative pools of queries. As mentioned in
 
 After create pseudo dataset $D_{ce} = \{(Q_i, P_i, y_i)\}, y \in \{0, 1\} $, we use pseudo dataset $D_{ce}$ for fine-tuning cross-encoder.
 
-![](./imgs/denoise_finetune.png)
-
 ```
 sh scripts/cross_encoder_adaptation.sh
 ```
+
+![](./imgs/denoise_finetune.png)
+
+
+The model will be saved at `output/{exp_flag}/{dataset}/{model_name}-{current_time}`. 
+
+Under model saved folder:
+- `logs`: Tensorboard logs
+- `args.txt`: Args
+- `train_log.txt`: Training log, including testing results
+- `train_pairs.json`: Training pairs, which you can reuse in another experiment.
+
+
 | Parameter                   | Description                                                  |
 |-----------------------------|--------------------------------------------------------------|
 | `train_pairs_path`| Use specific training pairs. |
+|`exp_flag`| Customize this flag to recognize the experiment |
 | `base_path`                 | Base directory for the script                                |
 | `seed`                      | Random seed for reproducibility                              |
 | `denoise_warmup_ratio`      | Warm-up ratio for denoising fine-tuning                       |
